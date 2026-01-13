@@ -51,6 +51,12 @@ return Application::configure(basePath: dirname(__DIR__))
 
     // System / programmer errors
     $exceptions->render(function (Throwable $e, Request $request) {
+        // Skip standard exceptions to let Laravel handle them (422, 403, 401, etc.)
+        if ($e instanceof \Illuminate\Validation\ValidationException ||
+            $e instanceof \Illuminate\Auth\Access\AuthorizationException ||
+            $e instanceof \Symfony\Component\HttpKernel\Exception\HttpException) {
+            return null;
+        }
 
         logger()->error('System error', [
             'exception' => $e,
@@ -66,7 +72,7 @@ return Application::configure(basePath: dirname(__DIR__))
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        // в debug Laravel сам покажет Whoops
+        // In debug mode Laravel will show Whoops
         return null;
     });
 
