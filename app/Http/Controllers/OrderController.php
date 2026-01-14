@@ -7,6 +7,8 @@ use App\Services\OrderService;
 // for change the response
 //use Illuminate\Http\JsonResponse;
 
+use App\Http\Resources\OrderResource;
+
 class OrderController extends Controller
 {
     protected $service;
@@ -50,7 +52,7 @@ class OrderController extends Controller
     public function apiIndex()
     {
         $orders = $this->service->allOrders();
-        return response()->json($orders);
+        return OrderResource::collection($orders);
     }
 
     public function indexApiPage()

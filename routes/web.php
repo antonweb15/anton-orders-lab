@@ -16,8 +16,7 @@ use App\Http\Controllers\TestController;
 
 Route::get('/', [HomeController::class, 'index']);
 
-Route::get('/orders', [OrderController::class, 'index'])
-    ->middleware(ChangeOrderPrices::class);
+Route::get('/orders', [OrderController::class, 'index']);
 
 Route::get('/orders-api', [OrderController::class, 'indexApiPage']);
 
