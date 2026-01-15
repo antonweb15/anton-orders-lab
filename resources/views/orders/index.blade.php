@@ -5,6 +5,16 @@
 @section('content')
 
     <h2>Orders</h2>
+
+    <div style="margin-bottom: 20px;">
+        <strong>Sort by:</strong>
+        <a href="{{ request()->fullUrlWithQuery(['sort' => 'latest']) }}">Latest</a> |
+        <a href="{{ request()->fullUrlWithQuery(['sort' => 'oldest']) }}">Oldest</a> |
+        <a href="{{ request()->fullUrlWithQuery(['sort' => 'price_asc']) }}">Price (Asc)</a> |
+        <a href="{{ request()->fullUrlWithQuery(['sort' => 'price_desc']) }}">Price (Desc)</a> |
+        <a href="{{ request()->fullUrlWithQuery(['sort' => 'reverse']) }}">Reverse (ID desc)</a>
+    </div>
+
     <table>
         <thead>
             <tr>
@@ -13,7 +23,7 @@
                 <th>Product</th>
                 <th>Quantity</th>
                 <th>Price</th>
-                <th>Сreated</th>
+                <th>Created</th>
             </tr>
         </thead>
         <tbody>
@@ -29,5 +39,9 @@
             @endforeach
         </tbody>
     </table>
+
+    <div style="margin-top: 20px;">
+        {{ $orders->appends(request()->query())->links() }}
+    </div>
 
 @endsection

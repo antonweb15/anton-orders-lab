@@ -11,9 +11,9 @@ class Php85CompatibilityServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        // Подавляем предупреждения PHP 8.5
+        // Suppress PHP 8.5 warnings
         if (PHP_VERSION_ID >= 80500) {
-            // Подавляем E_DEPRECATED для PDO и для null offset в Laravel internal
+            // Suppress E_DEPRECATED for PDO and for null offset in Laravel internal
             set_error_handler(function ($errno, $errstr) {
                 if ($errno === E_DEPRECATED) {
                     if (str_contains($errstr, 'PDO::MYSQL_ATTR_SSL_CA')) return true;
@@ -27,7 +27,7 @@ class Php85CompatibilityServiceProvider extends ServiceProvider
     }
 
     /**
-     * Динамически исправляем конфигурацию базы данных в памяти.
+     * Dynamically fix database configuration in memory.
      */
     protected function patchDatabaseConfig(): void
     {
@@ -37,10 +37,10 @@ class Php85CompatibilityServiceProvider extends ServiceProvider
         foreach ($connections as $name => $config) {
             if (isset($config['options']) && is_array($config['options'])) {
                 foreach ($config['options'] as $key => $value) {
-                    // 1012 - это числовое значение константы PDO::MYSQL_ATTR_SSL_CA
+                    // 1012 is the numeric value of PDO::MYSQL_ATTR_SSL_CA constant
                     if ($key === 'PDO::MYSQL_ATTR_SSL_CA' || $key === 1012) {
-                        // В PHP 8.5+ рекомендуется использовать Pdo\Mysql::ATTR_SSL_CA
-                        // Но если мы просто хотим убрать предупреждение, мы можем использовать числовое значение
+                        // In PHP 8.5+ it's recommended to use Pdo\Mysql::ATTR_SSL_CA
+                        // But to remove warnings, we can just use the numeric value
                         unset($connections[$name]['options'][$key]);
                         $connections[$name]['options'][1012] = $value;
                         $patched = true;

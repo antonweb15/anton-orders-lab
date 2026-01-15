@@ -19,7 +19,8 @@ class OrderResource extends JsonResource
             'name' => $this->name,
             'product' => $this->product,
             'quantity' => $this->quantity,
-            'price' => 'replacement using API Resource',
+            'price' => $this->price,
+            'status' => $this->status,
             'created_at' => $this->created_at->format('Y-m-d H:i:s'),
         ];
     }

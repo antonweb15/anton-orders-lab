@@ -12,6 +12,8 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::get('/orders', [OrderController::class, 'apiIndex']);
+Route::get('/orders/filtered', [OrderController::class, 'apiFiltered']);
+Route::get('/orders/search', [OrderController::class, 'apiFiltered']);
 
 Route::get('/test-api', [TestController::class, 'api']);
 

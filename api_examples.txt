@@ -1,0 +1,26 @@
+API Examples for anton-orders-lab
+
+1. Web View (Standard Blade):
+   http://127.0.0.1:8000/orders
+   http://127.0.0.1:8000/orders?sort=price_desc
+   http://127.0.0.1:8000/orders?page=2
+
+2. Web View (API Table with JavaScript):
+   http://127.0.0.1:8000/orders-api
+   http://127.0.0.1:8000/orders-api?status=paid
+   http://127.0.0.1:8000/orders-api?sort=oldest&page=1
+
+3. Pure API Endpoints:
+   - All orders:
+     GET http://127.0.0.1:8000/api/orders
+     GET http://127.0.0.1:8000/api/orders?sort=price_asc
+     GET http://127.0.0.1:8000/api/orders?sort=reverse
+     GET http://127.0.0.1:8000/api/orders?page=3
+
+   - Filtered orders:
+     GET http://127.0.0.1:8000/api/orders/filtered?status=paid
+     GET http://127.0.0.1:8000/api/orders/search?status=paid
+     GET http://127.0.0.1:8000/api/orders/search?status=pending&sort=price_desc
+     GET http://127.0.0.1:8000/api/orders/search?status=paid&sort=reverse
+     GET http://127.0.0.1:8000/api/orders/search?from=2026-01-01&to=2026-01-31
+     GET http://127.0.0.1:8000/api/orders/search?user_id=1
