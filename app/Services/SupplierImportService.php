@@ -39,6 +39,7 @@ class SupplierImportService
             $products = $data['data'] ?? [];
 
             foreach ($products as $item) {
+                // Using Eloquent ORM to update or create product
                 Product::updateOrCreate(
                     ['supplier_id' => $item['id']], // external ID from supplier
                     [

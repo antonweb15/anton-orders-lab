@@ -16,6 +16,7 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
+        // Using Eloquent ORM to find user by email
         $user = User::where('email', $request->email)->first();
 
         if (! $user || ! Hash::check($request->password, $user->password)) {

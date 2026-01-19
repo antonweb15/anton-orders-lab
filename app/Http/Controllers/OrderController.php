@@ -22,6 +22,7 @@ class OrderController extends Controller
     public function index()
     {
         $sort = request('sort', 'latest');
+        // Using Eloquent ORM via service
         $orders = $this->service->allOrders($sort);
         return view('orders.index', ['orders' => $orders]);
     }
@@ -30,6 +31,7 @@ class OrderController extends Controller
     public function apiIndex()
     {
         $sort = request('sort', 'latest'); // get ?sort= from query
+        // Using Eloquent ORM via service
         $orders = $this->service->allOrders($sort);
         return OrderResource::collection($orders);
     }
@@ -39,6 +41,7 @@ class OrderController extends Controller
     {
         $filters = request()->only(['status', 'user_id', 'from', 'to']);
         $sort = request('sort', 'latest');
+        // Using Eloquent ORM via service
         $orders = $this->service->filteredOrders($filters, $sort);
         return OrderResource::collection($orders);
     }
@@ -55,6 +58,7 @@ class OrderController extends Controller
     public function export(Order $order)
     {
         try {
+            // Using Eloquent ORM via export service
             $result = $this->exportService->exportOrder($order);
 
             if (request()->expectsJson()) {

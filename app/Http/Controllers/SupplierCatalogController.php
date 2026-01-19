@@ -11,6 +11,7 @@ class SupplierCatalogController extends Controller
      */
     public function index()
     {
+        // Using Eloquent ORM to get paginated supplier products
         $products = SupplierProduct::query()
             ->orderBy('id', 'desc')
             ->paginate(10);

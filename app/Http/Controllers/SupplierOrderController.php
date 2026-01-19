@@ -12,6 +12,7 @@ class SupplierOrderController extends Controller
      */
     public function index()
     {
+        // Using Eloquent ORM to get paginated supplier orders
         $orders = SupplierOrder::latest()->paginate(10);
         return view('supplier.orders', compact('orders'));
     }
@@ -29,6 +30,7 @@ class SupplierOrderController extends Controller
             'price'         => 'required|numeric',
         ]);
 
+        // Using Eloquent ORM to create a new supplier order
         $order = SupplierOrder::create([
             'external_id'   => $request->external_id,
             'customer_name' => $request->customer_name,

@@ -18,6 +18,7 @@ class CatalogController extends Controller
     // Показываем нашу таблицу каталога
     public function index()
     {
+        // Using Eloquent ORM to get paginated products
         $products = Product::latest()->paginate(10); // все импортированные товары
         return view('catalog.index', compact('products'));
     }
@@ -25,6 +26,7 @@ class CatalogController extends Controller
     // Импортируем товары от поставщика
     public function import()
     {
+        // Using Eloquent ORM via service import
         $this->importService->importAll(); // метод в сервисе, который делает REST-запрос и сохраняет
         return redirect()->route('catalog.index')->with('success', 'Catalog imported successfully!');
     }
@@ -32,6 +34,7 @@ class CatalogController extends Controller
     // Очищаем таблицу товаров
     public function clear()
     {
+        // Using Eloquent ORM to truncate table
         Product::truncate();
         return redirect()->route('catalog.index')->with('success', 'Catalog cleared successfully!');
     }

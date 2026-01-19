@@ -12,6 +12,7 @@ class OrderService
      */
     public function allOrders(?string $sort = 'latest')
     {
+        // Using Eloquent ORM to initialize query
         $query = Order::query();
 
         // Special case: latest sort only select limited fields
@@ -29,6 +30,7 @@ class OrderService
             $query->latestFirst(); // default
         }
 
+        // Using Eloquent ORM to return paginated results
         return $query->paginate(10);
     }
 
@@ -38,6 +40,7 @@ class OrderService
      */
     public function filteredOrders(array $filters, string $sort = 'latest')
     {
+        // Using Eloquent ORM to filter orders
         $query = Order::query()
             ->filter($filters);
 
@@ -56,6 +59,7 @@ class OrderService
             $query->latestFirst();
         }
 
+        // Using Eloquent ORM to return paginated results
         return $query->paginate(10);
     }
 }

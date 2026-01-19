@@ -12,6 +12,7 @@ class SupplierProductController extends Controller
     {
         $sort = $request->get('sort', 'latest');
 
+        // Using Eloquent ORM with conditional ordering and pagination
         $products = SupplierProduct::query()
             ->when($sort === 'latest', fn ($q) => $q->orderByDesc('id'))
             ->when($sort === 'oldest', fn ($q) => $q->orderBy('id'))
