@@ -22,6 +22,7 @@ class SupplierOrderController extends Controller
      */
     public function store(Request $request)
     {
+        // Validate incoming order data from external system
         $request->validate([
             'external_id'   => 'required|integer',
             'customer_name' => 'required|string',
