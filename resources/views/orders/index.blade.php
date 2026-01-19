@@ -15,6 +15,13 @@
         <a href="{{ request()->fullUrlWithQuery(['sort' => 'reverse']) }}">Reverse (ID desc)</a>
     </div>
 
+    @if(session('success'))
+        <div style="color: green; margin-bottom: 20px;">{{ session('success') }}</div>
+    @endif
+    @if(session('error'))
+        <div style="color: red; margin-bottom: 20px;">{{ session('error') }}</div>
+    @endif
+
     <table>
         <thead>
             <tr>
@@ -24,6 +31,7 @@
                 <th>Quantity</th>
                 <th>Price</th>
                 <th>Created</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>
@@ -35,6 +43,12 @@
                 <td>{{ $order->quantity ?? '-' }}</td>
                 <td>{{ $order->price ?? '-' }}</td>
                 <td>{{ $order->created_at }}</td>
+                <td>
+                    <form action="{{ route('orders.export', $order->id) }}" method="POST">
+                        @csrf
+                        <button type="submit">Export</button>
+                    </form>
+                </td>
             </tr>
             @endforeach
         </tbody>

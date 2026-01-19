@@ -31,11 +31,12 @@
             <th>Quantity</th>
             <th>Price</th>
             <th>Created</th>
+            <th>Action</th>
         </tr>
         </thead>
         <tbody id="orders-table">
         <tr>
-            <td colspan="6">Loading...</td>
+            <td colspan="7">Loading...</td>
         </tr>
         </tbody>
     </table>
@@ -48,10 +49,9 @@
             // If filters are present, use /search endpoint
             const isSearch = urlParams.has('status') || urlParams.has('user_id') || urlParams.has('from') || urlParams.has('to');
             const baseUrl = isSearch ? '/api/orders/search' : '/api/orders';
-
             const fetchUrl = baseUrl + '?' + urlParams.toString();
 
-            document.getElementById('orders-table').innerHTML = '<tr><td colspan="6">Loading...</td></tr>';
+            document.getElementById('orders-table').innerHTML = '<tr><td colspan="7">Loading...</td></tr>';
 
             fetch(fetchUrl)
                 .then(response => response.json())
@@ -64,7 +64,7 @@
                     const links = res.links || {};
 
                     if (orders.length === 0) {
-                        tbody.innerHTML = '<tr><td colspan="6">No orders found</td></tr>';
+                        tbody.innerHTML = '<tr><td colspan="7">No orders found</td></tr>';
                         renderPagination(null);
                         return;
                     }
@@ -78,6 +78,9 @@
                             <td>${order.quantity ?? '-'}</td>
                             <td>${order.price ?? '-'}</td>
                             <td>${order.created_at ?? '-'}</td>
+                            <td>
+                                <button onclick="exportOrder(${order.id}, this)">Export</button>
+                            </td>
                         `;
                         tbody.appendChild(row);
                     });
@@ -87,8 +90,40 @@
                 .catch(error => {
                     console.error('Fetch error:', error);
                     document.getElementById('orders-table').innerHTML =
-                        '<tr><td colspan="6">Error loading orders</td></tr>';
+                        '<tr><td colspan="7">Error loading orders</td></tr>';
                 });
+        }
+
+        function exportOrder(id, btn) {
+            if (!confirm('Export order #' + id + ' to supplier?')) return;
+
+            btn.disabled = true;
+            btn.innerHTML = 'Sending...';
+
+            fetch('/orders/' + id + '/export', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message && data.message.includes('successfully')) {
+                    alert('Success: ' + data.message);
+                    btn.innerHTML = 'Exported';
+                } else {
+                    alert('Error: ' + (data.message || 'Failed to export'));
+                    btn.disabled = false;
+                    btn.innerHTML = 'Export';
+                }
+            })
+            .catch(error => {
+                console.error('Export error:', error);
+                alert('System error during export');
+                btn.disabled = false;
+                btn.innerHTML = 'Export';
+            });
         }
 
         function renderPagination(res) {
