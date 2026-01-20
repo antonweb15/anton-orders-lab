@@ -15,27 +15,29 @@ class CatalogController extends Controller
         $this->importService = $importService;
     }
 
-    // Показываем нашу таблицу каталога
-    public function index()
+    // API: list catalog products
+    public function apiIndex()
     {
         // Using Eloquent ORM to get paginated products
-        $products = Product::latest()->paginate(10); // все импортированные товары
-        return view('catalog.index', compact('products'));
+        $products = Product::latest()->paginate(10);
+        return response()->json($products);
     }
 
-    // Импортируем товары от поставщика
-    public function import()
+    // API: Import products from supplier
+    public function apiImport()
     {
-        // Using Eloquent ORM via service import
-        $this->importService->importAll(); // метод в сервисе, который делает REST-запрос и сохраняет
-        return redirect()->route('catalog.index')->with('success', 'Catalog imported successfully!');
+        try {
+            $this->importService->importAll();
+            return response()->json(['message' => 'Catalog imported successfully!']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
     }
 
-    // Очищаем таблицу товаров
-    public function clear()
+    // API: Clear catalog table
+    public function apiClear()
     {
-        // Using Eloquent ORM to truncate table
         Product::truncate();
-        return redirect()->route('catalog.index')->with('success', 'Catalog cleared successfully!');
+        return response()->json(['message' => 'Catalog cleared successfully!']);
     }
 }

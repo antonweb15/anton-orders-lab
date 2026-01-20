@@ -1,66 +1,113 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Anton Orders Lab - Laravel Project
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+This is a technical laboratory project built with Laravel 11, focusing on clean architecture, REST API, and integration between systems.
 
-## About Laravel
+## Key Features & Technical Solutions
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### 1. Architectural Patterns (SOLID & Clean Code)
+- **Service Layer**: Business logic is encapsulated in Services (`OrderService`, `SupplierImportService`, etc.) to keep controllers thin and logic reusable.
+- **Eloquent ORM**: Native Laravel ORM is used for all database interactions, ensuring readable and maintainable data access.
+- **API Resources**: Data transformation is handled by `OrderResource`, separating the database structure from the API response format.
+- **SOLID Compliance**: The project follows Single Responsibility (SRP), Open/Closed (OCP), and Dependency Inversion (DIP) principles.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### 2. Orders Management & API
+- **Web Interface**: Standard Blade templates with sorting (Latest, Oldest, Price, Reverse) and pagination.
+- **JS-Driven Table**: A dynamic table using native JavaScript to fetch data from the API without page reloads.
+- **Advanced Filtering**: Support for filtering by status, user ID, and date ranges.
+- **Pagination**: Consistent pagination across Web and API endpoints.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 3. Catalog Import (Internal REST Integration)
+- **Scenario**: Importing product catalog from a supplier's API.
+- **Endpoint**: `POST /catalog/import`
+- **Internal Handling**: To avoid deadlocks in single-threaded environments (like `php artisan serve`), the import service uses `app()->handle($request)` to call local API endpoints internally.
+- **Logic**: Supports full pagination of the supplier's catalog, updating or creating products based on their external IDs.
 
-## Learning Laravel
+### 4. Order Export
+- **Scenario**: Exporting local orders to a supplier's REST API.
+- **Endpoint**: `POST /orders/{order}/export`
+- **Logic**: Sends order data (ID, customer name, product, quantity, price) to the supplier's receiving endpoint.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 5. Exception Handling & Validation
+- **Global Error Handling**: Centralized management of Business Exceptions and System Errors in `bootstrap/app.php`.
+- **Custom Exceptions**: Usage of classes like `UserNotActiveException` for specific business logic errors.
+- **Strict Validation**: All incoming data (Login, API Orders) is validated using Laravel's validation engine.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### 6. PHP 8.5 Compatibility
+- The project includes a `Php85CompatibilityServiceProvider` to handle deprecations in the upcoming PHP 8.5 version (e.g., PDO constants), ensuring future-proof stability.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## SPA Developer Guide (API Documentation)
 
-## Laravel Sponsors
+This project is fully prepared for Single Page Application (SPA) development. All core functionalities are available via REST API endpoints returning JSON.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### Authentication (Laravel Sanctum)
+- **Login**: `POST /api/login` (Params: `email`, `password`) -> Returns `token`.
+- **Profile**: `GET /api/profile` (Header: `Authorization: Bearer {token}`) -> Returns user object.
 
-### Premium Partners
+### Orders API
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/orders` | Paginated list of all orders. |
+| GET | `/api/orders/search` | Advanced filtering/search for orders. |
+| POST | `/api/orders/{id}/export` | Export a specific order to the supplier system. |
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+**Query Parameters for Orders:**
+- `sort`: `latest` (default), `oldest`, `price_asc`, `price_desc`, `reverse` (ID desc).
+- `page`: Page number (e.g., `?page=2`).
+- `status`: Filter by status (`paid`, `pending`).
+- `user_id`: Filter by specific user ID.
+- `from`/`to`: Date range filters (YYYY-MM-DD).
 
-## Contributing
+### Catalog Management API
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/catalog` | Paginated list of imported products in our system. |
+| POST | `/api/catalog/import` | Trigger a new import from the supplier's API. |
+| POST | `/api/catalog/clear` | Wipe all products from the local catalog. |
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Supplier Emulation API (For testing integration)
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/supplier/products` | Paginated list of supplier's catalog. |
+| POST | `/api/supplier/orders` | Endpoint that receives exported orders. |
 
-## Code of Conduct
+### Expected JSON Format (Example for Orders)
+```json
+{
+  "data": [
+    {
+      "id": 1,
+      "name": "Customer Name",
+      "product": "Product Name",
+      "quantity": 5,
+      "price": "100.00",
+      "status": "paid",
+      "created_at": "2026-01-20 15:00:00"
+    }
+  ],
+  "meta": {
+    "current_page": 1,
+    "last_page": 5,
+    "total": 50
+  },
+  "links": {
+    "first": "...",
+    "last": "...",
+    "prev": null,
+    "next": "..."
+  }
+}
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+---
 
-## Security Vulnerabilities
+## Installation & Setup
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+1. **Clone the repository**
+2. **Install dependencies**: `composer install`
+3. **Setup environment**: `cp .env.example .env` and configure your database.
+4. **Run migrations**: `php artisan migrate`
+5. **Start the server**: `php artisan serve`
+6. **Run tests**: `php artisan test`
 
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+*Created as part of a Laravel development laboratory.*
