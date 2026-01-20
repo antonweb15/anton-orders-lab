@@ -35,6 +35,22 @@ This is a technical laboratory project built with Laravel 11, focusing on clean 
 ### 6. PHP 8.5 Compatibility
 - The project includes a `Php85CompatibilityServiceProvider` to handle deprecations in the upcoming PHP 8.5 version (e.g., PDO constants), ensuring future-proof stability.
 
+### Filament Admin Panel
+The project includes a powerful administration panel built with **Filament v3**. It allows managing all entities (Orders, Products, Supplier Data) through a modern UI.
+
+- **URL**: `/admin`
+- **Credentials**:
+    - **Email**: `admin@example.com`
+    - **Password**: `admin123`
+
+**Available Resources:**
+- **Orders**: Full management of customer orders.
+- **Products**: Management of the local product catalog.
+- **Supplier Orders**: Interface to view orders from the supplier's perspective (emulation).
+- **Supplier Products**: Management of the supplier's available products.
+
+---
+
 ## SPA Developer Guide (API Documentation)
 
 This project is fully prepared for Single Page Application (SPA) development. All core functionalities are available via REST API endpoints returning JSON.

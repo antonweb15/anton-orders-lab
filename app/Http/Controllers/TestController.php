@@ -23,6 +23,7 @@ class TestController extends Controller
 
     public function bug()
     {
+        $a = new \stdClass();
         $a->boom(); // system bug
     }
 }

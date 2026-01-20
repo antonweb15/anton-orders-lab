@@ -11,6 +11,11 @@ class Order extends Model
 
     protected $fillable = ['name', 'price', 'product', 'quantity', 'status', 'user_id'];
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
     // Sort by newest first (default for API)
     public function scopeLatestFirst($query, bool $selectLimitedFields = false)
     {

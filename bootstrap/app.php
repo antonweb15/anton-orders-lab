@@ -57,6 +57,11 @@ return Application::configure(basePath: dirname(__DIR__))
                 ], 401);
             }
 
+            // Let Filament handle its own authentication exceptions
+            if ($request->is('admin') || $request->is('admin/*')) {
+                return null;
+            }
+
             if (Route::has('login')) {
                 return redirect()->guest(route('login'));
             }
