@@ -38,6 +38,11 @@ This is a technical laboratory project built with Laravel 11, focusing on clean 
 ### Filament Admin Panel
 The project includes a powerful administration panel built with **Filament v3**. It allows managing all entities (Orders, Products, Supplier Data) through a modern UI.
 
+**Powered by Livewire:**
+- The entire admin panel is built using the **TALL stack** (Tailwind, Alpine.js, Laravel, Livewire).
+- All interactive elements (tables, forms, modals, search, pagination) are implemented via **Livewire** components, providing a seamless SPA-like experience without full page reloads.
+- You can find Livewire-related logic and comments in `app/Filament/Admin/Resources/` and `app/Providers/Filament/AdminPanelProvider.php`.
+
 - **URL**: `/admin`
 - **Credentials**:
     - **Email**: `admin@example.com`

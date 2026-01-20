@@ -13,12 +13,20 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
+/**
+ * This Resource class defines the UI and behavior for Supplier Orders.
+ * Filament converts this into a Livewire component for real-time interaction.
+ */
 class SupplierOrderResource extends Resource
 {
     protected static ?string $model = SupplierOrder::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    /**
+     * Defines the form UI.
+     * Powered by Livewire: provides instant validation and dynamic fields.
+     */
     public static function form(Form $form): Form
     {
         return $form
@@ -47,6 +55,10 @@ class SupplierOrderResource extends Resource
             ]);
     }
 
+    /**
+     * Defines the table UI.
+     * Powered by Livewire: sorting, searching and pagination work without page refresh.
+     */
     public static function table(Table $table): Table
     {
         return $table
