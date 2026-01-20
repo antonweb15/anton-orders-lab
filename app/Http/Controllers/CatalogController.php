@@ -23,6 +23,32 @@ class CatalogController extends Controller
         return response()->json($products);
     }
 
+    // Web: list catalog products
+    public function index()
+    {
+        // Using Eloquent ORM to get paginated products
+        $products = Product::latest()->paginate(10);
+        return view('catalog.index', compact('products'));
+    }
+
+    // Web: Import products from supplier
+    public function import()
+    {
+        try {
+            $this->importService->importAll();
+            return back()->with('success', 'Catalog imported successfully!');
+        } catch (\Exception $e) {
+            return back()->with('error', $e->getMessage());
+        }
+    }
+
+    // Web: Clear catalog table
+    public function clear()
+    {
+        Product::truncate();
+        return back()->with('success', 'Catalog cleared successfully!');
+    }
+
     // API: Import products from supplier
     public function apiImport()
     {
