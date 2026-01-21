@@ -1,153 +1,115 @@
-# Anton Orders Lab - Laravel Project
+# 🧪 Anton Orders Lab — Modern Laravel Ecosystem Showcase
 
-This is a technical laboratory project built with Laravel 11, focusing on clean architecture, REST API, and integration between systems.
+[![Laravel 11](https://img.shields.io/badge/Laravel-11.x-FF2D20?style=for-the-badge&logo=laravel)](https://laravel.com)
+[![PHP 8.2+](https://img.shields.io/badge/PHP-8.2+-777BB4?style=for-the-badge&logo=php)](https://php.net)
+[![Filament V3](https://img.shields.io/badge/Filament-V3-FFB11B?style=for-the-badge&logo=filament)](https://filamentphp.com)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v3-06B6D4?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com)
 
-## Key Features & Technical Solutions
-
-### 1. Architectural Patterns (SOLID & Clean Code)
-- **Service Layer**: Business logic is encapsulated in Services (`OrderService`, `SupplierImportService`, etc.) to keep controllers thin and logic reusable.
-- **Eloquent ORM**: Native Laravel ORM is used for all database interactions, ensuring readable and maintainable data access.
-- **API Resources**: Data transformation is handled by `OrderResource`, separating the database structure from the API response format.
-- **SOLID Compliance**: The project follows Single Responsibility (SRP), Open/Closed (OCP), and Dependency Inversion (DIP) principles.
-
-### 2. Orders Management & API
-- **Web Interface**: Standard Blade templates with sorting (Latest, Oldest, Price, Reverse) and pagination.
-- **JS-Driven Table**: A dynamic table using native JavaScript to fetch data from the API without page reloads.
-- **Advanced Filtering**: Support for filtering by status, user ID, and date ranges.
-- **Pagination**: Consistent pagination across Web and API endpoints.
-
-### 3. Catalog Import (Internal REST Integration)
-- **Scenario**: Importing product catalog from a supplier's API.
-- **Endpoint**: `POST /catalog/import`
-- **Internal Handling**: To avoid deadlocks in single-threaded environments (like `php artisan serve`), the import service uses `app()->handle($request)` to call local API endpoints internally.
-- **Logic**: Supports full pagination of the supplier's catalog, updating or creating products based on their external IDs.
-
-### 4. Order Export
-- **Scenario**: Exporting local orders to a supplier's REST API.
-- **Endpoint**: `POST /orders/{order}/export`
-- **Logic**: Sends order data (ID, customer name, product, quantity, price) to the supplier's receiving endpoint.
-
-### 5. Exception Handling & Validation
-- **Global Error Handling**: Centralized management of Business Exceptions and System Errors in `bootstrap/app.php`.
-- **Custom Exceptions**: Usage of classes like `UserNotActiveException` for specific business logic errors.
-- **Strict Validation**: All incoming data (Login, API Orders) is validated using Laravel's validation engine.
-
-### 6. PHP 8.5 Compatibility
-- The project includes a `Php85CompatibilityServiceProvider` to handle deprecations in the upcoming PHP 8.5 version (e.g., PDO constants), ensuring future-proof stability.
-
-### Filament Admin Panel
-The project includes a powerful administration panel built with **Filament v3**. It allows managing all entities (Orders, Products, Supplier Data) through a modern UI.
-
-**Powered by Livewire:**
-- The entire admin panel is built using the **TALL stack** (Tailwind, Alpine.js, Laravel, Livewire).
-- All interactive elements (tables, forms, modals, search, pagination) are implemented via **Livewire** components, providing a seamless SPA-like experience without full page reloads.
-- You can find Livewire-related logic and comments in `app/Filament/Admin/Resources/` and `app/Providers/Filament/AdminPanelProvider.php`.
-
-- **URL**: `/admin`
-- **Credentials**:
-    - **Email**: `admin@example.com`
-    - **Password**: `admin123`
-
-**Available Resources:**
-- **Orders**: Full management of customer orders.
-- **Products**: Management of the local product catalog.
-- **Supplier Orders**: Interface to view orders from the supplier's perspective (emulation).
-- **Supplier Products**: Management of the supplier's available products.
+A sophisticated laboratory project demonstrating a modern Laravel-based architecture for e-commerce and B2B systems. This repository showcases advanced backend patterns, seamless integrations, and a high-performance admin interface.
 
 ---
 
-## SPA Developer Guide (API Documentation)
+## 🚀 Key Technical Highlights
 
-This project is fully prepared for Single Page Application (SPA) development. All core functionalities are available via REST API endpoints returning JSON.
+### 🏛️ Architecture & Clean Code
+- **Service Layer Pattern**: Business logic is decoupled from controllers into dedicated services (`OrderService`, `SupplierImportService`).
+- **SOLID Principles**: Strict adherence to Single Responsibility and Dependency Inversion.
+- **API Resources**: Clean data transformation layer for decoupled frontend/backend evolution.
+- **Custom Exception Handling**: Centralized management of business-logic exceptions (`UserNotActiveException`) and system errors.
 
-### Authentication (Laravel Sanctum)
-- **Login**: `POST /api/login` (Params: `email`, `password`) -> Returns `token`.
-- **Profile**: `GET /api/profile` (Header: `Authorization: Bearer {token}`) -> Returns user object.
+### 🛠️ The TALL Stack & Admin Panel
+- **Filament V3**: A full-featured administration dashboard for managing Orders, Products, and Payments.
+- **Livewire Integration**: Real-time, reactive UI components without writing complex JavaScript.
+- **Dynamic Catalog**: Advanced filtering, sorting, and paginated tables powered by Livewire.
 
-### Orders API
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/orders` | Paginated list of all orders. |
-| GET | `/api/orders/search` | Advanced filtering/search for orders. |
-| POST | `/api/orders/{id}/export` | Export a specific order to the supplier system. |
+### 💳 Integrations & External Systems
+- **Stripe SDK**: Secure payment processing with automated **Webhook** handling for checkout completion.
+- **B2B Supplier Integration**:
+    - **Catalog Import**: Robust service for syncing products from external REST APIs.
+    - **Internal API Handling**: Specialized solution using `app()->handle($request)` to prevent deadlocks during local development/import.
+    - **Order Export**: Automated data transmission to supplier systems.
 
-**Query Parameters for Orders:**
-- `sort`: `latest` (default), `oldest`, `price_asc`, `price_desc`, `reverse` (ID desc).
-- `page`: Page number (e.g., `?page=2`).
-- `status`: Filter by status (`paid`, `pending`).
-- `user_id`: Filter by specific user ID.
-- `from`/`to`: Date range filters (YYYY-MM-DD).
+### 🌐 SPA-Ready REST API
+- **Sanctum Authentication**: Secure token-based auth for modern SPAs.
+- **Advanced Query Support**: Built-in support for complex filtering (`status`, `date_range`, `user_id`) and multi-mode sorting.
+- **Auto-Validation**: Strict Request Validation for all API endpoints.
 
-### Catalog Management API
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/catalog` | Paginated list of imported products in our system. |
-| POST | `/api/catalog/import` | Trigger a new import from the supplier's API. |
-| POST | `/api/catalog/clear` | Wipe all products from the local catalog. |
+---
 
-### Supplier Emulation API (For testing integration)
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/supplier/products` | Paginated list of supplier's catalog. |
-| POST | `/api/supplier/orders` | Endpoint that receives exported orders. |
+## 🛠️ Tech Stack
 
-### Expected JSON Format (Example for Orders)
-```json
-{
-  "data": [
-    {
-      "id": 1,
-      "name": "Customer Name",
-      "product": "Product Name",
-      "quantity": 5,
-      "price": "100.00",
-      "status": "paid",
-      "created_at": "2026-01-20 15:00:00"
-    }
-  ],
-  "meta": {
-    "current_page": 1,
-    "last_page": 5,
-    "total": 50
-  },
-  "links": {
-    "first": "...",
-    "last": "...",
-    "prev": null,
-    "next": "..."
-  }
-}
+- **Framework**: Laravel 11
+- **Admin Panel**: Filament v3 (Livewire + Alpine.js)
+- **Database**: Eloquent ORM (MySQL/PostgreSQL ready)
+- **Frontend**: Tailwind CSS, Blade, Vanilla JS
+- **Payments**: Stripe API
+- **Testing**: PHPUnit (Feature & Unit tests)
+- **Compatibility**: PHP 8.5+ ready (via custom Compatibility Provider)
+
+---
+
+## 🚦 Getting Started
+
+### Prerequisites
+- PHP 8.2+
+- Composer
+- Node.js & NPM
+
+### Installation
+
+1. **Clone & Install**:
+   ```bash
+   git clone https://github.com/your-username/anton-orders-lab.git
+   cd anton-orders-lab
+   composer install
+   npm install && npm run build
+   ```
+
+2. **Environment**:
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
+
+3. **Database & Admin**:
+   ```bash
+   php artisan migrate --seed
+   # Admin: admin@example.com / admin123
+   ```
+
+4. **Run Server**:
+   ```bash
+   php artisan serve
+   ```
+
+---
+
+## 🧪 Testing & Quality
+
+The project maintains high reliability through automated testing:
+```bash
+php artisan test
+```
+**Covered scenarios:** API Authentication, Order Lifecycle, Export Logic, and Global Exception Handling.
+
+---
+
+## 📖 API Reference (Quick View)
+
+| Endpoint | Method | Description |
+| :--- | :--- | :--- |
+| `/api/login` | `POST` | Auth & Token Issue |
+| `/api/orders` | `GET` | List with advanced filters |
+| `/api/catalog/import` | `POST` | Trigger Supplier Sync |
+| `/api/stripe/webhook` | `POST` | Stripe Event Listener |
+
+---
+
+## 💳 Stripe Webhook Testing
+```bash
+stripe listen --forward-to localhost:8000/api/stripe/webhook
+stripe trigger checkout.session.completed
 ```
 
 ---
-
-## Installation & Setup
-
-1. **Clone the repository**
-2. **Install dependencies**: `composer install`
-3. **Setup environment**: `cp .env.example .env` and configure your database.
-4. **Run migrations**: `php artisan migrate`
-5. **Start the server**: `php artisan serve`
-6. **Run tests**: `php artisan test`
-
----
-*Created as part of a Laravel development laboratory.*
-
-### Stripe Integration (Demo)
-
-#### Local Development with Webhooks
-To test Stripe webhooks locally:
-1.  **Login to Stripe**:
-    ```bash
-    stripe login
-    ```
-2.  **Forward Webhooks**:
-    ```bash
-    stripe listen --forward-to localhost:8000/api/stripe/webhook
-    ```
-3.  **Trigger Test Event** (optional):
-    ```bash
-    stripe trigger checkout.session.completed
-    ```
-
-Payments are recorded in the `payments` table and can be viewed in the Admin Panel under "Payments".
+*Developed as a showcase for high-end Laravel development standards.*
