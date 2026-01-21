@@ -37,3 +37,8 @@ Route::prefix('supplier')->group(function () {
     Route::get('/products', [SupplierProductController::class, 'index']);
     Route::post('/orders', [SupplierOrderController::class, 'store']); // API to receive orders
 });
+
+use App\Http\Controllers\StripeController;
+
+Route::post('/stripe/webhook', [StripeController::class, 'webhook']);
+

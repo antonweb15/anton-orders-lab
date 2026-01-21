@@ -7,6 +7,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\SupplierCatalogController;
 use App\Http\Controllers\CatalogController;
+use App\Http\Controllers\StripeController;
 
 
  //welcome page laravel
@@ -38,5 +39,13 @@ Route::get('/supplier/orders', [SupplierOrderController::class, 'index'])
 Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog.index');
 Route::post('/catalog/import', [CatalogController::class, 'import'])->name('catalog.import');
 Route::post('/catalog/clear', [CatalogController::class, 'clear'])->name('catalog.clear');
+
+Route::get('/pay', fn () => view('pay'))->name('pay.index');
+Route::post('/pay', [StripeController::class, 'pay'])
+    ->name('stripe.pay');
+
+Route::get('/success', fn () => view('success'))->name('payment.success');
+Route::get('/cancel', fn () => view('cancel'))->name('payment.cancel');
+
 
 

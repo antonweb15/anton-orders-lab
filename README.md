@@ -132,3 +132,22 @@ This project is fully prepared for Single Page Application (SPA) development. Al
 
 ---
 *Created as part of a Laravel development laboratory.*
+
+### Stripe Integration (Demo)
+
+#### Local Development with Webhooks
+To test Stripe webhooks locally:
+1.  **Login to Stripe**:
+    ```bash
+    stripe login
+    ```
+2.  **Forward Webhooks**:
+    ```bash
+    stripe listen --forward-to localhost:8000/api/stripe/webhook
+    ```
+3.  **Trigger Test Event** (optional):
+    ```bash
+    stripe trigger checkout.session.completed
+    ```
+
+Payments are recorded in the `payments` table and can be viewed in the Admin Panel under "Payments".

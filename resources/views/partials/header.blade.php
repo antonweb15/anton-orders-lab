@@ -10,6 +10,7 @@
                     <a href="/orders" class="{{ request()->is('orders') ? 'border-indigo-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700' }} inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium">Orders</a>
                     <a href="/catalog" class="{{ request()->is('catalog') ? 'border-indigo-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700' }} inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium">Catalog</a>
                     <a href="/orders-api" class="{{ request()->is('orders-api') ? 'border-indigo-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700' }} inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium">Orders API</a>
+                    <a href="/pay" class="{{ request()->is('pay') ? 'border-green-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700' }} inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium">Pay Demo</a>
                 </div>
             </div>
             <div class="hidden sm:ml-6 sm:flex sm:items-center">
