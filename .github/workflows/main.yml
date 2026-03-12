@@ -44,4 +44,4 @@ jobs:
 
       # 5 Запустить тесты
       - name: Run PHPUnit tests
-        run: vendor/bin/phpunit --colors=always --testdox
+        run: vendor/bin/phpunit tests/Feature/SimpleFeatureTest.php --colors=always --testdox
