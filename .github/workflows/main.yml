@@ -26,7 +26,17 @@ jobs:
       - name: Install dependencies
         run: composer install --no-progress --prefer-dist
 
+      # 3.5️⃣ Установить Node.js и собрать ассеты (Vite)
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
 
+      - name: Install NPM dependencies
+        run: npm install
+
+      - name: Build assets
+        run: npm run build
 
       # 4️⃣ Set APP_KEY
       - name: Set APP_KEY
