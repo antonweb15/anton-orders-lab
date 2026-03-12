@@ -1,19 +1,31 @@
-name: First CI Test
+name: PHP CI
 
 on:
   push:
-    branches: [ main ]
-
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    branches: [ main ]  # пайплайн запускается при пуше в main
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+
+    runs-on: ubuntu-latest  # виртуальная машина GitHub Actions
 
     steps:
-      - name: Скачать код
+
+      # 1️⃣ Скачать код
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Проверка CI
-        run: echo "CI работает!"
+      # 2️⃣ Установить PHP
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.2
+          coverage: none
+
+      # 3️⃣ Установить зависимости через Composer
+      - name: Install dependencies
+        run: composer install --no-progress --prefer-dist
+
+      # 4️⃣ Запустить тесты
+      - name: Run PHPUnit tests
+        run: vendor/bin/phpunit --colors=always --verbose
