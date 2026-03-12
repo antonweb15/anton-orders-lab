@@ -26,6 +26,12 @@ jobs:
       - name: Install dependencies
         run: composer install --no-progress --prefer-dist
 
-      # 4️⃣ Запустить тесты
+
+
+      # 4️⃣ Set APP_KEY
+      - name: Set APP_KEY
+        run: echo "APP_KEY=${{ secrets.APP_KEY }}" >> .env
+
+      # 5 Запустить тесты
       - name: Run PHPUnit tests
         run: vendor/bin/phpunit --colors=always --testdox
