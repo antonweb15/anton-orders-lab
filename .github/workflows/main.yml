@@ -28,4 +28,4 @@ jobs:
 
       # 4️⃣ Запустить тесты
       - name: Run PHPUnit tests
-        run: vendor/bin/phpunit --colors=always --verbose
+        run: vendor/bin/phpunit --colors=always --testdox
