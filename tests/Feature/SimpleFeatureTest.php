@@ -10,7 +10,7 @@ class SimpleFeatureTest extends TestCase
     {
         // Пример простой логики
         $x = 10;
-        $y = 6;
+        $y = 5;
         $result = $x - $y;
 
         // Проверяем результат
