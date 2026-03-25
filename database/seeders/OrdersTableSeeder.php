@@ -9,7 +9,7 @@ class OrdersTableSeeder extends Seeder
 {
     public function run(): void
     {
-        Order::truncate(); // очищаем таблицу перед заполнением
+        Order::truncate(); // Clear the table before filling
 
         Order::factory()->count(50)->create();
     }

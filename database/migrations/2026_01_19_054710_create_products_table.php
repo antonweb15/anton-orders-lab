@@ -13,13 +13,13 @@ return new class extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('supplier_id'); // ID товара у поставщика
+            $table->unsignedBigInteger('supplier_id'); // Product ID from the supplier
             $table->string('name');
             $table->decimal('price', 10, 2);
             $table->integer('stock');
             $table->timestamps();
 
-            $table->unique('supplier_id'); // один товар поставщика = одна запись
+            $table->unique('supplier_id'); // one supplier product = one record
         });
 
     }

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Order;
+use Illuminate\Support\Facades\Cache;
 
 class OrderService
 {
@@ -12,26 +13,33 @@ class OrderService
      */
     public function allOrders(?string $sort = 'latest')
     {
-        // Using Eloquent ORM to initialize query
-        $query = Order::query();
+        $page = request('page', 1);
+        $cacheKey = "orders_all_{$sort}_page_{$page}";
 
-        // Special case: latest sort only select limited fields
-        if ($sort === 'latest') {
-            $query->latestFirst(true);
-        } elseif ($sort === 'oldest') {
-            $query->oldestFirst();
-        } elseif ($sort === 'price_asc') {
-            $query->sortBy('price', 'asc');
-        } elseif ($sort === 'price_desc') {
-            $query->sortBy('price', 'desc');
-        } elseif ($sort === 'reverse') {
-            $query->idDesc();
-        } else {
-            $query->latestFirst(); // default
-        }
+        // Cache for 10 minutes (600 seconds)
+        // Switch to Redis by updating CACHE_STORE=redis in .env
+        return Cache::remember($cacheKey, 600, function () use ($sort) {
+            // Using Eloquent ORM to initialize query
+            $query = Order::query();
 
-        // Using Eloquent ORM to return paginated results
-        return $query->paginate(10);
+            // Special case: latest sort only select limited fields
+            if ($sort === 'latest') {
+                $query->latestFirst(true);
+            } elseif ($sort === 'oldest') {
+                $query->oldestFirst();
+            } elseif ($sort === 'price_asc') {
+                $query->sortBy('price', 'asc');
+            } elseif ($sort === 'price_desc') {
+                $query->sortBy('price', 'desc');
+            } elseif ($sort === 'reverse') {
+                $query->idDesc();
+            } else {
+                $query->latestFirst(); // default
+            }
+
+            // Using Eloquent ORM to return paginated results
+            return $query->paginate(10);
+        });
     }
 
     /**
@@ -40,26 +48,33 @@ class OrderService
      */
     public function filteredOrders(array $filters, string $sort = 'latest')
     {
-        // Using Eloquent ORM to filter orders
-        $query = Order::query()
-            ->filter($filters);
+        // For filtered orders, caching is trickier because of many filter combinations.
+        // We can use a hash of filters to create a unique key.
+        $filterHash = md5(serialize($filters) . $sort . request('page', 1));
+        $cacheKey = "orders_filtered_{$filterHash}";
 
-        // Apply sorting after filtering
-        if ($sort === 'latest') {
-            $query->latestFirst();
-        } elseif ($sort === 'oldest') {
-            $query->oldestFirst();
-        } elseif ($sort === 'price_asc') {
-            $query->sortBy('price', 'asc');
-        } elseif ($sort === 'price_desc') {
-            $query->sortBy('price', 'desc');
-        } elseif ($sort === 'reverse') {
-            $query->idDesc();
-        } else {
-            $query->latestFirst();
-        }
+        return Cache::remember($cacheKey, 600, function () use ($filters, $sort) {
+            // Using Eloquent ORM to filter orders
+            $query = Order::query()
+                ->filter($filters);
 
-        // Using Eloquent ORM to return paginated results
-        return $query->paginate(10);
+            // Apply sorting after filtering
+            if ($sort === 'latest') {
+                $query->latestFirst();
+            } elseif ($sort === 'oldest') {
+                $query->oldestFirst();
+            } elseif ($sort === 'price_asc') {
+                $query->sortBy('price', 'asc');
+            } elseif ($sort === 'price_desc') {
+                $query->sortBy('price', 'desc');
+            } elseif ($sort === 'reverse') {
+                $query->idDesc();
+            } else {
+                $query->latestFirst();
+            }
+
+            // Using Eloquent ORM to return paginated results
+            return $query->paginate(10);
+        });
     }
 }

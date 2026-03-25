@@ -8,19 +8,19 @@ class SimpleFeatureTest extends TestCase
 {
     public function testBasicFeature()
     {
-        // Пример простой логики
+        // Simple logic example
         $x = 10;
         $y = 5;
         $result = $x - $y;
 
-        // Проверяем результат
+        // Check the result
         $this->assertEquals(
             5,
             $result,
             "Feature test failed: 10 - 5 should equal 5"
         );
 
-        // Выводим понятное сообщение в CI
+        // Print a clear message in CI
         echo "\nTest passed: Basic subtraction feature works correctly.\n";
     }
 }

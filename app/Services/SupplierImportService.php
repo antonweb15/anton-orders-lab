@@ -12,7 +12,7 @@ class SupplierImportService
 
     public function __construct()
     {
-        // URL вашего REST API поставщика
+        // URL of your supplier's REST API
         $this->supplierUrl = 'http://127.0.0.1:8000/api/supplier/products';
     }
 
