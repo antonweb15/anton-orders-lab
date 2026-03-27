@@ -11,6 +11,8 @@ class ApiCachingTest extends TestCase
 {
     use RefreshDatabase;
 
+    private const CATALOG_CACHE_VERSION_KEY = 'catalog_products_version';
+
     /**
      * Test that catalog products are cached.
      */
@@ -19,14 +21,15 @@ class ApiCachingTest extends TestCase
         // 1. Create some products
         Product::factory()->count(5)->create();
 
-        // 2. Clear cache to start fresh
-        Cache::flush();
+        // 2. Reset only catalog cache namespace to start fresh
+        Cache::forget(self::CATALOG_CACHE_VERSION_KEY);
 
         // 3. Make first request - should populate cache
         $response1 = $this->getJson('/api/catalog');
         $response1->assertStatus(200);
 
-        $this->assertTrue(Cache::has('catalog_products_page_1'), 'Cache should have catalog_products_page_1 key');
+        $version = (int) Cache::get(self::CATALOG_CACHE_VERSION_KEY, 1);
+        $this->assertTrue(Cache::has("catalog_products_v{$version}_page_1"), 'Cache should have versioned catalog key');
 
         // 4. Modify database directly (bypass cache)
         $newProduct = Product::create([
@@ -53,16 +56,18 @@ class ApiCachingTest extends TestCase
     public function test_catalog_cache_is_invalidated_on_import()
     {
         Product::factory()->count(3)->create();
-        Cache::remember('catalog_products_page_1', 600, function() {
+        Cache::put(self::CATALOG_CACHE_VERSION_KEY, 1);
+        Cache::remember('catalog_products_v1_page_1', 600, function () {
             return ['cached_data'];
         });
 
-        $this->assertTrue(Cache::has('catalog_products_page_1'));
+        $this->assertTrue(Cache::has('catalog_products_v1_page_1'));
 
-        // Call apiImport (which calls Cache::flush())
+        // Call apiImport (which invalidates catalog cache namespace by incrementing version)
         $this->postJson('/api/catalog/import');
 
-        $this->assertFalse(Cache::has('catalog_products_page_1'), 'Cache should be cleared after import');
+        $this->assertSame(2, (int) Cache::get(self::CATALOG_CACHE_VERSION_KEY));
+        $this->assertTrue(Cache::has('catalog_products_v1_page_1'), 'Old entries may exist but must become unreachable by new version');
     }
 
     /**
@@ -71,15 +76,17 @@ class ApiCachingTest extends TestCase
     public function test_catalog_cache_is_invalidated_on_clear()
     {
         Product::factory()->count(3)->create();
-        Cache::remember('catalog_products_page_1', 600, function() {
+        Cache::put(self::CATALOG_CACHE_VERSION_KEY, 1);
+        Cache::remember('catalog_products_v1_page_1', 600, function () {
             return ['cached_data'];
         });
 
-        $this->assertTrue(Cache::has('catalog_products_page_1'));
+        $this->assertTrue(Cache::has('catalog_products_v1_page_1'));
 
         // Call apiClear
         $this->postJson('/api/catalog/clear');
 
-        $this->assertFalse(Cache::has('catalog_products_page_1'), 'Cache should be cleared after clearing catalog');
+        $this->assertSame(2, (int) Cache::get(self::CATALOG_CACHE_VERSION_KEY));
+        $this->assertTrue(Cache::has('catalog_products_v1_page_1'), 'Old entries may exist but must become unreachable by new version');
     }
 }

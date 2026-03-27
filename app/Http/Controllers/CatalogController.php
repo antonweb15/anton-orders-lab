@@ -4,11 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Services\SupplierImportService;
 use App\Models\Product;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 
 class CatalogController extends Controller
 {
+    private const CATALOG_CACHE_VERSION_KEY = 'catalog_products_version';
+
     protected $importService;
 
     public function __construct(SupplierImportService $importService)
@@ -21,7 +22,8 @@ class CatalogController extends Controller
     {
         // Get current page to use in cache key
         $page = request('page', 1);
-        $cacheKey = "catalog_products_page_{$page}";
+        $version = $this->getCatalogCacheVersion();
+        $cacheKey = "catalog_products_v{$version}_page_{$page}";
 
         // Cache for 600 seconds (10 minutes)
         // To use Redis: change CACHE_STORE=redis in .env or config/cache.php
@@ -46,8 +48,7 @@ class CatalogController extends Controller
     {
         try {
             $this->importService->importAll();
-            // Invalidate catalog cache after import
-            Cache::flush();
+            $this->invalidateCatalogCache();
             return back()->with('success', 'Catalog imported successfully!');
         } catch (\Exception $e) {
             return back()->with('error', $e->getMessage());
@@ -58,8 +59,7 @@ class CatalogController extends Controller
     public function clear()
     {
         Product::truncate();
-        // Invalidate catalog cache after clear
-        Cache::flush();
+        $this->invalidateCatalogCache();
         return back()->with('success', 'Catalog cleared successfully!');
     }
 
@@ -68,9 +68,7 @@ class CatalogController extends Controller
     {
         try {
             $this->importService->importAll();
-            // Invalidate catalog cache after import
-            // To clear specific keys: Cache::forget('catalog_products_page_1')
-            Cache::flush();
+            $this->invalidateCatalogCache();
             return response()->json(['message' => 'Catalog imported successfully!']);
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage()], 500);
@@ -81,8 +79,17 @@ class CatalogController extends Controller
     public function apiClear()
     {
         Product::truncate();
-        // Invalidate catalog cache after clear
-        Cache::flush();
+        $this->invalidateCatalogCache();
         return response()->json(['message' => 'Catalog cleared successfully!']);
+    }
+
+    private function getCatalogCacheVersion(): int
+    {
+        return (int) Cache::get(self::CATALOG_CACHE_VERSION_KEY, 1);
+    }
+
+    private function invalidateCatalogCache(): void
+    {
+        Cache::increment(self::CATALOG_CACHE_VERSION_KEY);
     }
 }
