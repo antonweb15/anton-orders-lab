@@ -9,7 +9,7 @@ class UserService
     public function checkUser(bool $active): void
     {
         if (! $active) {
-            throw new UserNotActiveException();
+            throw new UserNotActiveException;
         }
     }
 }

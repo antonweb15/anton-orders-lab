@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Services\UserService;
-use Illuminate\Http\Request;
 
 class TestController extends Controller
 {
@@ -23,7 +22,7 @@ class TestController extends Controller
 
     public function bug()
     {
-        $a = new \stdClass();
+        $a = new \stdClass;
         $a->boom(); // system bug
     }
 }

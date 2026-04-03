@@ -1,15 +1,12 @@
 <?php
 
+use App\Exceptions\BusinessException;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-
-use App\Exceptions\BusinessException;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
-
-use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
-use Illuminate\Auth\AuthenticationException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -57,7 +54,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->render(function (\Illuminate\Auth\AuthenticationException $e, Request $request) {
             if ($request->expectsJson()) {
                 return response()->json([
-                    'message' => 'Unauthenticated'
+                    'message' => 'Unauthenticated',
                 ], 401);
             }
 
@@ -71,7 +68,7 @@ return Application::configure(basePath: dirname(__DIR__))
             }
 
             return response()->json([
-                'message' => 'Unauthenticated'
+                'message' => 'Unauthenticated',
             ], 401);
         });
 
@@ -101,6 +98,5 @@ return Application::configure(basePath: dirname(__DIR__))
             // In debug mode Laravel will show Whoops
             return null;
         });
-
 
     })->create();

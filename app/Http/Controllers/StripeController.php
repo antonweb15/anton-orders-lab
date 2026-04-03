@@ -3,10 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Stripe\Stripe;
-use Stripe\Checkout\Session;
-
 use Illuminate\Support\Facades\DB;
+use Stripe\Checkout\Session;
+use Stripe\Stripe;
 
 class StripeController extends Controller
 {
@@ -39,7 +38,7 @@ class StripeController extends Controller
         $payload = $request->getContent();
         $event = json_decode($payload);
 
-        if (!$event) {
+        if (! $event) {
             return response()->json(['error' => 'Invalid payload'], 400);
         }
 
@@ -57,7 +56,7 @@ class StripeController extends Controller
             ]);
 
             logger()->info('Payment success', [
-                'session' => $session->id
+                'session' => $session->id,
             ]);
         }
 

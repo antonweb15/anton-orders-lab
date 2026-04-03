@@ -1,19 +1,17 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\OrderController;
-use App\Http\Middleware\ChangeOrderPrices;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\TestController;
-use App\Http\Controllers\SupplierCatalogController;
 use App\Http\Controllers\CatalogController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\StripeController;
+use App\Http\Controllers\SupplierCatalogController;
+use App\Http\Controllers\TestController;
+use Illuminate\Support\Facades\Route;
 
-
- //welcome page laravel
- /*
- Route::get('/', function () {
-    return view('welcome');
+// welcome page laravel
+/*
+Route::get('/', function () {
+   return view('welcome');
 });
 */
 
@@ -35,7 +33,6 @@ Route::get('/supplier/catalog', [SupplierCatalogController::class, 'index'])
 Route::get('/supplier/orders', [SupplierOrderController::class, 'index'])
     ->name('supplier.orders.index');
 
-
 Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog.index');
 Route::post('/catalog/import', [CatalogController::class, 'import'])->name('catalog.import');
 Route::post('/catalog/clear', [CatalogController::class, 'clear'])->name('catalog.clear');
@@ -46,6 +43,3 @@ Route::post('/pay', [StripeController::class, 'pay'])
 
 Route::get('/success', fn () => view('success'))->name('payment.success');
 Route::get('/cancel', fn () => view('cancel'))->name('payment.cancel');
-
-
-

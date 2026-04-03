@@ -2,11 +2,10 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-
 use PHPUnit\Framework\Attributes\Test;
+use Tests\TestCase;
 
 class ApiAuthTest extends TestCase
 {
@@ -33,7 +32,7 @@ class ApiAuthTest extends TestCase
 
         $token = $login->json('token');
 
-        $this->withHeader('Authorization', 'Bearer ' . $token)
+        $this->withHeader('Authorization', 'Bearer '.$token)
             ->getJson('/api/profile')
             ->assertStatus(200)
             ->assertJson([

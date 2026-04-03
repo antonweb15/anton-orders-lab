@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
@@ -22,6 +22,7 @@ class Order extends Model
         if ($selectLimitedFields) {
             $query->select(['id', 'name', 'price', 'product', 'quantity', 'status', 'created_at']);
         }
+
         return $query->orderBy('created_at', 'desc');
     }
 

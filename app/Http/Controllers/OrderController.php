@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\OrderService;
-use App\Services\OrderExportService;
 use App\Http\Resources\OrderResource;
 use App\Models\Order;
+use App\Services\OrderExportService;
+use App\Services\OrderService;
 
 class OrderController extends Controller
 {
     protected $service;
+
     protected $exportService;
 
     public function __construct(OrderService $service, OrderExportService $exportService)
@@ -24,6 +25,7 @@ class OrderController extends Controller
         $sort = request('sort', 'latest');
         // Using Eloquent ORM via service
         $orders = $this->service->allOrders($sort);
+
         return view('orders.index', ['orders' => $orders]);
     }
 
@@ -33,6 +35,7 @@ class OrderController extends Controller
         $sort = request('sort', 'latest'); // get ?sort= from query
         // Using Eloquent ORM via service
         $orders = $this->service->allOrders($sort);
+
         return OrderResource::collection($orders);
     }
 
@@ -43,6 +46,7 @@ class OrderController extends Controller
         $sort = request('sort', 'latest');
         // Using Eloquent ORM via service
         $orders = $this->service->filteredOrders($filters, $sort);
+
         return OrderResource::collection($orders);
     }
 
@@ -70,6 +74,7 @@ class OrderController extends Controller
             if (request()->expectsJson()) {
                 return response()->json(['message' => $e->getMessage()], 500);
             }
+
             return back()->with('error', $e->getMessage());
         }
     }

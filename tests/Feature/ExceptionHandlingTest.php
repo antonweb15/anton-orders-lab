@@ -2,9 +2,8 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
-
 use PHPUnit\Framework\Attributes\Test;
+use Tests\TestCase;
 
 class ExceptionHandlingTest extends TestCase
 {

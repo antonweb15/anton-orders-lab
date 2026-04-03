@@ -1,14 +1,12 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\OrderController;
-use App\Http\Controllers\TestController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\SupplierProductController;
-
-
 use App\Http\Controllers\CatalogController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\TestController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -41,4 +39,3 @@ Route::prefix('supplier')->group(function () {
 use App\Http\Controllers\StripeController;
 
 Route::post('/stripe/webhook', [StripeController::class, 'webhook']);
-

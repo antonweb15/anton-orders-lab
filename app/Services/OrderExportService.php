@@ -2,9 +2,8 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\Http;
-use Illuminate\Http\Request;
 use App\Models\Order;
+use Illuminate\Http\Request;
 
 class OrderExportService
 {
@@ -22,11 +21,11 @@ class OrderExportService
     public function exportOrder(Order $order)
     {
         $payload = [
-            'external_id'   => $order->id,
+            'external_id' => $order->id,
             'customer_name' => $order->name,
-            'product'       => $order->product,
-            'quantity'      => $order->quantity,
-            'price'         => $order->price,
+            'product' => $order->product,
+            'quantity' => $order->quantity,
+            'price' => $order->price,
         ];
 
         // Use internal call to avoid deadlocks in single-threaded artisan serve
@@ -35,9 +34,9 @@ class OrderExportService
 
         $response = app()->handle($request);
 
-        if (!$response->isSuccessful()) {
+        if (! $response->isSuccessful()) {
             $error = json_decode($response->getContent(), true)['message'] ?? 'Unknown error';
-            throw new \Exception('Failed to export order: ' . $error);
+            throw new \Exception('Failed to export order: '.$error);
         }
 
         return json_decode($response->getContent(), true);

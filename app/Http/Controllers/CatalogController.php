@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\SupplierImportService;
 use App\Models\Product;
+use App\Services\SupplierImportService;
 use Illuminate\Support\Facades\Cache;
 
 class CatalogController extends Controller
@@ -40,6 +40,7 @@ class CatalogController extends Controller
     {
         // Using Eloquent ORM to get paginated products
         $products = Product::latest()->paginate(10);
+
         return view('catalog.index', compact('products'));
     }
 
@@ -49,6 +50,7 @@ class CatalogController extends Controller
         try {
             $this->importService->importAll();
             $this->invalidateCatalogCache();
+
             return back()->with('success', 'Catalog imported successfully!');
         } catch (\Exception $e) {
             return back()->with('error', $e->getMessage());
@@ -60,6 +62,7 @@ class CatalogController extends Controller
     {
         Product::truncate();
         $this->invalidateCatalogCache();
+
         return back()->with('success', 'Catalog cleared successfully!');
     }
 
@@ -69,6 +72,7 @@ class CatalogController extends Controller
         try {
             $this->importService->importAll();
             $this->invalidateCatalogCache();
+
             return response()->json(['message' => 'Catalog imported successfully!']);
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage()], 500);
@@ -80,6 +84,7 @@ class CatalogController extends Controller
     {
         Product::truncate();
         $this->invalidateCatalogCache();
+
         return response()->json(['message' => 'Catalog cleared successfully!']);
     }
 

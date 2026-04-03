@@ -50,7 +50,7 @@ class OrderService
     {
         // For filtered orders, caching is trickier because of many filter combinations.
         // We can use a hash of filters to create a unique key.
-        $filterHash = md5(serialize($filters) . $sort . request('page', 1));
+        $filterHash = md5(serialize($filters).$sort.request('page', 1));
         $cacheKey = "orders_filtered_{$filterHash}";
 
         return Cache::remember($cacheKey, 600, function () use ($filters, $sort) {

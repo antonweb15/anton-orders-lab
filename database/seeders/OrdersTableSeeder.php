@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Order;
+use Illuminate\Database\Seeder;
 
 class OrdersTableSeeder extends Seeder
 {

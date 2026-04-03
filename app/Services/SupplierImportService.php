@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\Http;
-use Illuminate\Http\Request;
 use App\Models\Product;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 
 class SupplierImportService
 {
@@ -31,8 +31,8 @@ class SupplierImportService
             $request = Request::create($this->supplierUrl, 'GET', ['page' => $page]);
             $response = app()->handle($request);
 
-            if (!$response->isSuccessful()) {
-                throw new \Exception('Failed to fetch supplier catalog at page ' . $page);
+            if (! $response->isSuccessful()) {
+                throw new \Exception('Failed to fetch supplier catalog at page '.$page);
             }
 
             $data = json_decode($response->getContent(), true);
@@ -43,7 +43,7 @@ class SupplierImportService
                 Product::updateOrCreate(
                     ['supplier_id' => $item['id']], // external ID from supplier
                     [
-                        'name'  => $item['name'],
+                        'name' => $item['name'],
                         'price' => $item['price'],
                         'stock' => $item['stock'],
                     ]

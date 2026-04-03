@@ -12,7 +12,7 @@ class SupplierProductFactory extends Factory
     public function definition(): array
     {
         return [
-            'external_id' => 'SUP-' . $this->faker->unique()->numberBetween(1000, 9999),
+            'external_id' => 'SUP-'.$this->faker->unique()->numberBetween(1000, 9999),
             'name' => $this->faker->words(3, true),
             'price' => $this->faker->numberBetween(50, 2000),
             'stock' => $this->faker->numberBetween(0, 100),
