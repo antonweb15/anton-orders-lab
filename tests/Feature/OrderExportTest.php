@@ -4,7 +4,9 @@ namespace Tests\Feature;
 
 use App\Models\Order;
 use App\Models\SupplierOrder;
+use App\Services\OrderExportService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Mockery\MockInterface;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
@@ -62,5 +64,40 @@ class OrderExportTest extends TestCase
         ]);
 
         $this->assertEquals(1, SupplierOrder::count());
+    }
+
+    #[Test]
+    public function it_returns_json_error_when_export_service_fails()
+    {
+        $order = Order::factory()->create();
+
+        $this->mock(OrderExportService::class, function (MockInterface $mock) {
+            $mock->shouldReceive('exportOrder')
+                ->once()
+                ->andThrow(new \Exception('Supplier unavailable'));
+        });
+
+        $response = $this->postJson("/api/orders/{$order->id}/export");
+
+        $response->assertStatus(500)->assertJson([
+            'message' => 'Supplier unavailable',
+        ]);
+    }
+
+    #[Test]
+    public function it_redirects_back_with_error_when_web_export_fails()
+    {
+        $order = Order::factory()->create();
+
+        $this->mock(OrderExportService::class, function (MockInterface $mock) {
+            $mock->shouldReceive('exportOrder')
+                ->once()
+                ->andThrow(new \Exception('Supplier unavailable'));
+        });
+
+        $response = $this->from('/orders')->post("/orders/{$order->id}/export");
+
+        $response->assertRedirect('/orders');
+        $response->assertSessionHas('error', 'Supplier unavailable');
     }
 }

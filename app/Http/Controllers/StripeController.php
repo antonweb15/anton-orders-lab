@@ -45,15 +45,17 @@ class StripeController extends Controller
         if ($event->type === 'checkout.session.completed') {
             $session = $event->data->object;
 
-            DB::table('payments')->insert([
-                'stripe_id' => $session->id,
-                'amount' => $session->amount_total / 100,
-                'currency' => strtoupper($session->currency),
-                'status' => 'success',
-                'payload' => json_encode($event),
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+            DB::table('payments')->updateOrInsert(
+                ['stripe_id' => $session->id],
+                [
+                    'amount' => $session->amount_total / 100,
+                    'currency' => strtoupper($session->currency),
+                    'status' => 'success',
+                    'payload' => json_encode($event),
+                    'updated_at' => now(),
+                    'created_at' => now(),
+                ]
+            );
 
             logger()->info('Payment success', [
                 'session' => $session->id,

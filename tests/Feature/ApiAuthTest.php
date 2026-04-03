@@ -39,4 +39,30 @@ class ApiAuthTest extends TestCase
                 'email' => $user->email,
             ]);
     }
+
+    #[Test]
+    public function login_returns_401_for_invalid_password()
+    {
+        $user = User::factory()->create([
+            'password' => bcrypt('password'),
+        ]);
+
+        $this->postJson('/api/login', [
+            'email' => $user->email,
+            'password' => 'wrong-password',
+        ])->assertStatus(401)->assertJson([
+            'message' => 'Invalid credentials',
+        ]);
+    }
+
+    #[Test]
+    public function login_returns_422_for_invalid_payload()
+    {
+        $this->postJson('/api/login', [
+            'email' => 'not-an-email',
+        ])->assertStatus(422)->assertJsonValidationErrors([
+            'email',
+            'password',
+        ]);
+    }
 }
